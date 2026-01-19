@@ -1,6 +1,3 @@
-// src/js/foodlog.js
-// Food log management and tracking
-
 export const FoodLog = {
     goals: {
         calories: 2000,
@@ -8,10 +5,6 @@ export const FoodLog = {
         carbs: 250,
         fat: 65
     },
-
-    /**
-     * Main render function
-     */
     render() {
         this.updateDate();
         const log = JSON.parse(localStorage.getItem('foodLog') || '[]');
@@ -25,10 +18,6 @@ export const FoodLog = {
         this.renderWeeklyCalendar(log);
         this.updateWeeklyStats(log);
     },
-
-    /**
-     * Update date display
-     */
     updateDate() {
         const dateEl = document.getElementById('foodlog-date');
         if (dateEl) {
@@ -37,10 +26,6 @@ export const FoodLog = {
             dateEl.textContent = today.toLocaleDateString('en-US', options);
         }
     },
-
-    /**
-     * Update nutrition summary
-     */
     updateNutritionSummary(entries) {
         const totals = entries.reduce((acc, entry) => ({
             calories: acc.calories + (entry.nutrition.calories || 0),
@@ -54,10 +39,6 @@ export const FoodLog = {
         this.updateNutrientProgress('carbs', totals.carbs, this.goals.carbs);
         this.updateNutrientProgress('fat', totals.fat, this.goals.fat);
     },
-
-    /**
-     * Update single nutrient progress bar
-     */
     updateNutrientProgress(nutrient, current, goal) {
         const percentage = Math.min(Math.round((current / goal) * 100), 100);
         
@@ -74,24 +55,18 @@ export const FoodLog = {
         }
     },
 
-    /**
-     * Render logged meal items
-     */
     renderLoggedItems(entries) {
         const container = document.getElementById('logged-items-list');
         const clearBtn = document.getElementById('clear-foodlog');
         const countEl = document.getElementById('logged-items-count');
 
         if (!container) return;
-
         if (countEl) {
             countEl.textContent = `Logged Items (${entries.length})`;
         }
-
         if (clearBtn) {
             clearBtn.style.display = entries.length > 0 ? 'flex' : 'none';
         }
-
         if (entries.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-12 text-gray-400">
@@ -101,7 +76,6 @@ export const FoodLog = {
                 </div>`;
             return;
         }
-
         container.innerHTML = entries.map(entry => {
             const time = new Date(entry.timestamp).toLocaleTimeString('en-US', { 
                 hour: 'numeric', 
@@ -143,10 +117,6 @@ export const FoodLog = {
             `;
         }).join('');
     },
-
-    /**
-     * Render weekly calendar
-     */
     renderWeeklyCalendar(allEntries) {
         const container = document.getElementById('weekly-calendar');
         if (!container) return;
@@ -189,10 +159,6 @@ export const FoodLog = {
             `;
         }).join('');
     },
-
-    /**
-     * Update weekly stats
-     */
     updateWeeklyStats(allEntries) {
         const today = new Date();
         const currentDay = today.getDay();
@@ -229,10 +195,6 @@ export const FoodLog = {
         const daysOnGoalEl = document.getElementById('days-on-goal');
         if (daysOnGoalEl) daysOnGoalEl.textContent = `${daysWithEntries} / 7`;
     },
-
-    /**
-     * Delete a single entry
-     */
     deleteEntry(id) {
         if (confirm('Are you sure you want to delete this meal?')) {
             let log = JSON.parse(localStorage.getItem('foodLog') || '[]');
@@ -241,10 +203,6 @@ export const FoodLog = {
             this.render();
         }
     },
-
-    /**
-     * Clear all entries for today
-     */
     clearAll() {
         if (confirm('Are you sure you want to clear all logged meals for today?')) {
             const log = JSON.parse(localStorage.getItem('foodLog') || '[]');
@@ -257,6 +215,4 @@ export const FoodLog = {
         }
     }
 };
-
-// Make FoodLog available globally for onclick handlers
 window.FoodLog = FoodLog;
